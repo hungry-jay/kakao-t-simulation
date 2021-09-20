@@ -1,9 +1,12 @@
 package domain
 
-import api.RestAPI
-import response.StartApiResponse
+import api.RestApi
+import api.dto.StartApiRequest
+import api.dto.StartApiResponse
 
 class Problem {
+    var authKey: String = ""
+
     fun problem(args: Array<String>) {
         var map: Array<LongArray>? = Array(N) {
             LongArray(
@@ -12,9 +15,23 @@ class Problem {
         }
 //        var trucks: Array<Truck?> = arrayOfNulls<Truck>(TRUCK_COUNT)
         var result = "ready"
-        val restApi = RestAPI()
-        val startApiResponse: StartApiResponse = restApi.startApi()
-        println(startApiResponse.auth_key)
+        val restApi = RestApi()
+        val startApiResponse: StartApiResponse = restApi.startApi(StartApiRequest(1))
+        authKey = startApiResponse.auth_key
+        println(authKey)
+
+        restApi.locationsApi(authKey)
+        val truckResponse = restApi.trucksApi(authKey)
+//        println(truckResponse)
+//        (truckResponse.trucks.map {
+//            println(it)
+//        })
+//        val simulateResponse = restApi.simulateApi(authKey)
+//        println(simulateResponse)
+//        val scoreResponse = restApi.scoreApi(authKey)
+//        println(scoreResponse)
+
+
         while (result == "ready") {
 //            map = api.RestAPI.locationsAPI(N, auth_key)
 //            trucks = api.RestAPI.trucksAPI(TRUCK_COUNT, auth_key)

@@ -1,4 +1,4 @@
-package util
+package api.util
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
@@ -15,7 +15,8 @@ object HttpUtil {
     fun callApi(
         httpMethod: String,
         urlString: String,
-        token: String,
+        token: String? = null,
+        authKey: String? = null,
         body: Map<String, Any>,
         doesInput: Boolean = false,
         doesOutput: Boolean = false,
@@ -26,7 +27,7 @@ object HttpUtil {
         val url = URL(urlString)
         connection = url.openConnection() as HttpURLConnection
         try {
-            initConnection(connection, httpMethod, token, doesInput, doesOutput)
+            initConnection(connection, httpMethod, token, authKey, doesInput, doesOutput)
             if(body.isNotEmpty()) loadBody(connection, transformBodyToString(body))
 
             return if (connection.responseCode == HttpURLConnection.HTTP_OK) {
@@ -63,12 +64,14 @@ object HttpUtil {
     private fun initConnection(
         connection: HttpURLConnection,
         httpMethod: String,
-        token: String,
+        token: String?,
+        authKey: String?,
         doesInput: Boolean,
         doesOutput: Boolean,
     ) = connection.apply {
         requestMethod = httpMethod
-        setRequestProperty("X-Auth-Token", token)
+        if(!token.isNullOrBlank()) setRequestProperty("X-Auth-Token", token)
+        if(!authKey.isNullOrBlank()) setRequestProperty("Authorization", authKey)
         setRequestProperty("Content-Type", "application/json")
         setRequestProperty("Accept-Charset", "UTF-8")
         setRequestProperty("Transfer-Encoding", "chunked")
