@@ -1,6 +1,5 @@
 package api.util
 
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -17,39 +16,38 @@ object HttpUtil {
         urlString: String,
         token: String? = null,
         authKey: String? = null,
-        body: Map<String, Any>,
+        body: String? = null,
         doesInput: Boolean = false,
         doesOutput: Boolean = false,
     ): String {
         val connection: HttpURLConnection?
 
-        //URL 설정
         val url = URL(urlString)
         connection = url.openConnection() as HttpURLConnection
         try {
             initConnection(connection, httpMethod, token, authKey, doesInput, doesOutput)
-            if(body.isNotEmpty()) loadBody(connection, transformBodyToString(body))
+            if (body != null) loadBody(connection, body)
 
             return if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 val bufferedReader = BufferedReader(InputStreamReader(connection.inputStream, "UTF-8"))
-                val res = StringBuilder()
+                val response = StringBuilder()
                 var inputLine: String?
                 while (bufferedReader.readLine().also { inputLine = it } != null) {
-                    res.append(inputLine)
+                    response.append(inputLine)
                 }
 
-                res.toString()
+                response.toString()
             } else {
-                println("Error: didn't got 200 http status")
+                println("[Http response]: ${connection.responseCode}: ${connection.responseMessage}")
                 connection.responseCode.toString()
             }
         } catch (e: MalformedURLException) {
             println(e)
             e.printStackTrace()
         } catch (e: IOException) {
-            val br =  BufferedReader(InputStreamReader(connection.errorStream, "UTF-8"))
+            val bufferedReader =  BufferedReader(InputStreamReader(connection.errorStream, "UTF-8"))
             var errorLine: String?
-            while (br.readLine().also { errorLine = it } != null) {
+            while (bufferedReader.readLine().also { errorLine = it } != null) {
                 println(errorLine)
             }
             println(e)
@@ -84,13 +82,10 @@ object HttpUtil {
         defaultUseCaches = false
     }
 
-    private fun transformBodyToString(body: Map<String, Any>): String =
-        GsonBuilder().setPrettyPrinting().create().toJson(body)
-
-    private fun loadBody(connection: HttpURLConnection, bodyJson: String) =
+    private fun loadBody(connection: HttpURLConnection, body: String) =
         BufferedWriter(OutputStreamWriter(connection.outputStream, "UTF-8"))
             .run {
-                write(bodyJson)
+                write(body)
                 flush()
                 close()
             }

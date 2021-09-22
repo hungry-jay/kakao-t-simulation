@@ -2,6 +2,6 @@ package api.dto
 
 import api.vo.Command
 
-data class CommandApiRequest(
+data class SimulateApiRequest(
     val commands: List<Command>
 )

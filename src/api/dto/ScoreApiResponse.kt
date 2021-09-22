@@ -1,5 +1,5 @@
 package api.dto
 
-data class ScoreResponse(
+data class ScoreApiResponse(
     val score: Float,
 )
