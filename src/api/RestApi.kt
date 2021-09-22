@@ -10,11 +10,17 @@ import api.dto.StartApiResponse
 import api.dto.TrucksApiResponse
 import api.util.HttpUtil
 
-class RestApi {
+object RestApi {
+    private const val BASE_URL = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users"
+    private const val X_AUTH_TOKEN = "bcb07526e2da65feaf97210ed1fad467"
+    private const val POST = "POST"
+    private const val GET = "GET"
+    private const val PUT = "PUT"
+
     fun startApi(request: StartApiRequest): StartApiResponse =
         HttpUtil.callApi(
             httpMethod = POST,
-            urlString = "$BASE_URI/start",
+            urlString = "$BASE_URL/start",
             token = X_AUTH_TOKEN,
             body = Gson().toJson(request),
             doesInput = true,
@@ -25,7 +31,7 @@ class RestApi {
     fun locationsApi(authKey: String): LocationsApiResponse =
         HttpUtil.callApi(
             httpMethod = GET,
-            urlString = "$BASE_URI/locations",
+            urlString = "$BASE_URL/locations",
             authKey = authKey,
             doesInput = true,
             doesOutput = false,
@@ -34,7 +40,7 @@ class RestApi {
     fun trucksApi(authKey: String): TrucksApiResponse =
         HttpUtil.callApi(
             httpMethod = GET,
-            urlString = "$BASE_URI/trucks",
+            urlString = "$BASE_URL/trucks",
             authKey = authKey,
             doesInput = true,
             doesOutput = true,
@@ -43,7 +49,7 @@ class RestApi {
     fun simulateApi(request: SimulateApiRequest, authKey: String): SimulateApiResponse =
         HttpUtil.callApi(
             httpMethod = PUT,
-            urlString = "$BASE_URI/simulate",
+            urlString = "$BASE_URL/simulate",
             authKey = authKey,
             body = Gson().toJson(request),
             doesInput = true,
@@ -53,17 +59,9 @@ class RestApi {
     fun scoreApi(authKey: String): ScoreApiResponse =
         HttpUtil.callApi(
             httpMethod = GET,
-            urlString = "$BASE_URI/score",
+            urlString = "$BASE_URL/score",
             authKey = authKey,
             doesInput = true,
             doesOutput = false,
         ).let { Gson().fromJson(it, ScoreApiResponse::class.java) }
-
-    companion object {
-        const val BASE_URI = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users"
-        const val X_AUTH_TOKEN = "bcb07526e2da65feaf97210ed1fad467"
-        const val POST = "POST"
-        const val GET = "GET"
-        const val PUT = "PUT"
-    }
 }

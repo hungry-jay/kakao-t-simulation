@@ -2,7 +2,6 @@ import domain.Problem
 
 fun main() {
     println("Application start")
-    Problem().problem(
-        arrayOf<String>()
-    )
+    Problem.doProblem(scenario = 1)
+    Problem.doProblem(scenario = 2)
 }
