@@ -12,7 +12,7 @@ import api.util.HttpUtil
 
 object RestApi {
     private const val BASE_URL = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users"
-    private const val X_AUTH_TOKEN = "bcb07526e2da65feaf97210ed1fad467"
+    private const val X_AUTH_TOKEN = "d42062ee8ac5da45a55d78ca5461aec3"
     private const val POST = "POST"
     private const val GET = "GET"
     private const val PUT = "PUT"
